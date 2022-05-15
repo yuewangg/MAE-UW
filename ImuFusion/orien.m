@@ -11,8 +11,8 @@ clear; close all; clc;
 
 %--- Dataset parameters
 deltat = 1/200;             % Sampling period
-noise_gyro = 2.4e-3;        % Gyroscope noise(discrete), rad/s
-noise_accel = 2.83e-2;      % Accelerometer noise, m/s^2
+noise_gyro = 1.6968e-4;        % Gyroscope noise(discrete), rad/s
+noise_accel = 2.0000e-3;      % Accelerometer noise, m/s^2
 gravity = 9.81007;          % Gravity magnitude, m/s^2
 
 %--- Load data
@@ -21,6 +21,7 @@ gravity = 9.81007;          % Gravity magnitude, m/s^2
 % Each row of Ground truth data : 
 % (time, position, quaternion, velocity, gyroscope bias, accelerometer bias)
 data = load('data/attitude_data.mat');
+dataa=importdata('data.csv');
 imu_data = data.imu_data;   % IMU readings
 grt_data = data.grt_data;   % Ground truth (GT)
 grt_q = grt_data(:, 5:8);   % GT quaternions
