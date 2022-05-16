@@ -22,7 +22,7 @@ gravity = 9.81007;          % Gravity magnitude, m/s^2
 % (time, position, quaternion, velocity, gyroscope bias, accelerometer bias)
 %data = load('data/attitude_data.mat');
 %dataa=importdata('data.csv');
-imu_data = csvread('F:\datasets\euroc_mav0\imu0\data.csv',1) ;   % IMU readings
+imu_data = csvread('F:\datasets\euroc_mav0\imu0\data.csv',217) ;% IMU readings
 grt_data = csvread('F:\datasets\euroc_mav0\state_groundtruth_estimate0\data.csv',1) ;   % Ground truth (GT)
 grt_q = grt_data(:, 5:8);   % GT quaternions
 
@@ -31,7 +31,7 @@ bias_a = grt_data(1, 15:17);    % accelerometer bias
 
 
 %--- Container of the results
-N = length(imu_data);
+N = length(grt_data);
 allX = zeros(N, 4);
 
 
@@ -44,6 +44,8 @@ allX(1,:) = x';
 % ---Here we go !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 for k = 2 : N
     
+    %bias_w = grt_data(k-1, 12:14);    % gyroscope bias
+    %bias_a = grt_data(k-1, 15:17);    % accelerometer bias
     %--- 1. Propagation --------------------------
     % Gyroscope measurements
     w = (imu_data(k-1, 2:4) + imu_data(k, 2:4))/2;
@@ -108,19 +110,19 @@ for k = 2 : N
 end
 
 
+
 %--- Compare the results with ground truth
 q_Ws0 = quatinv(grt_q(1,:));
-N = length(grt_data);
+
 for i=1:N
     grt_q(i,:) = quatmultiply(q_Ws0, grt_q(i,:)); 
     allX(i,:) = quatmultiply(q_Ws0, allX(i,:));
 end
-[psi, theta, phi] = quat2angle(allX(1:N,:));
+[psi, theta, phi] = quat2angle(allX);
 [grt_psi, grt_theta, grt_phi] = quat2angle(grt_q);
 
 figure, hold on
 plot(1:N, psi,   'r-.', 1:N, grt_psi,   'r');
 plot(1:N, theta, 'g-.', 1:N, grt_theta, 'g');
 plot(1:N, phi,   'b-.', 1:N, grt_phi,   'b');
-
     
